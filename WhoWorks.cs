@@ -34,12 +34,26 @@ namespace WindowsFormsApplication15
             public string id;
             public string name;
             public string surname;
-
+            public string timein;
+            public string timeout;
+            public int inside;  // 1==in     0==out
+            public int indexoflistbox;
+            //public double breaktime;
+            //public double fullbreaktime;
+            public TimeSpan starttime;
+            public TimeSpan breaktime;
+            public TimeSpan fullbreaktime;
+            public TimeSpan fullworktime;
+            public TimeSpan lasttime;
             public employment()
             {
                 id = null;
                 name = null;
                 surname = null;
+                inside = 0;
+                //starttime = DateTime.
+              //  breaktime= 0;
+                //fullbreaktime = 0;
 
             }
         }
@@ -49,7 +63,7 @@ namespace WindowsFormsApplication15
             
             string fileName = "records.xls";
             string fileName2 = "report.xls";
-            string sourcePath = "c:/Users/dimitris/Desktop/first project";
+            string sourcePath = "c:/Program Files/WhoWorks";
             Excel.Application oXL;
             Excel._Workbook oWB;
             Excel._Worksheet oSheet;
@@ -66,7 +80,7 @@ namespace WindowsFormsApplication15
                 oXL.Visible = false;
                 oWB = (Excel._Workbook)(oXL.Workbooks.Add(Missing.Value));
                 oSheet = (Excel._Worksheet)oWB.ActiveSheet;
-                oWB.SaveCopyAs("C:/Users/dimitris/Desktop/first project/report.xls");
+                //oWB.SaveCopyAs("C:/Users/dimitris/Desktop/first project/report.xls");
 
 
 
@@ -84,14 +98,14 @@ namespace WindowsFormsApplication15
 
                 MessageBox.Show(errorMessage, "Error");
             }
-            string targetPath = "c:/Users/dimitris/Desktop/first project";
+            string targetPath = "c:/Program Files/WhoWorks";
 
             // Use Path class to manipulate file and directory paths. 
             string sourceFile = System.IO.Path.Combine(sourcePath, fileName);
             string destFile = System.IO.Path.Combine(targetPath, fileName2);
 
 
-            System.IO.File.Copy(sourceFile, destFile, true);
+            //System.IO.File.Copy(sourceFile, destFile, true);
 
             /*
                          oXL = new Excel.Application();
@@ -168,17 +182,19 @@ namespace WindowsFormsApplication15
 
                 }
 
-
-
+                 listBox1.Items.Add (k.name + "    " + k.surname ); 
+                 k.indexoflistbox = listBox1.Items.Count-1;
+                 
                 list.Add(k);
 
 
             }
 
-            MessageBox.Show(list.Count.ToString());
-            MessageBox.Show(list[1].name);
+            //MessageBox.Show(list.Count.ToString());
+            //MessageBox.Show(list[1].name);
             xlWorkBook.Close(true, null, null);
             xlApp.Quit();
+            
         }
 
         private void textBox1_TextChanged(object sender, EventArgs e)
@@ -189,6 +205,7 @@ namespace WindowsFormsApplication15
         private void textBox1_KeyUp(object sender, KeyEventArgs e)
         {
             string id;
+           // DateTime la;
             if (e.KeyCode == Keys.Enter)
             {
                 int count;
@@ -198,24 +215,57 @@ namespace WindowsFormsApplication15
                 for (count = 0; count <= list.Count - 1; count++)
                 {
                     if (id == list[count].id)
+                  {
+                      int flag = 0;
+                    TimeSpan timeSpan = DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0);
+                    if (id == list[count].id && list[count].inside==0) //enarksi vardias
                     {
-                        
-                        MessageBox.Show("find employment");
-                        
-                        richTextBox1.Text += list[count].name+" "+list[count].surname+"\r";
-                        //richTextBox1.SelectionStart = richTextBox1.Text.Length;
-                        //richTextBox1.Focus();
-                        //richTextBox1.Text +=  "new Log Message" + Environment.NewLine;
-
-                        //richTextBox1.Text += "rnanannana\r";
-                        
-                       //richTextBox1.Text = "First line\r\nSecond line";
-        
-                       
-                    
-                        break;
+                        //MessageBox.Show("mpika");
+                        //TimeSpan timeSpan = DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0);
+                        list[count].starttime = timeSpan;
+                        list[count].timein = DateTime.Now.ToLongTimeString();
+                       //  listBox1.Items[list[count].indexoflistbox]= listBox1.Items[list[count].indexoflistbox]+"\r";
+                        //list[count].indexoflistbox = listBox1.Items.Count-1;
+                        //list[count].inside++;
+                       // la = DateTime.UtcNow;
+                        //MessageBox.Show(la.ToString());
+                        //TimeSpan t = (DateTime.UtcNow - new DateTime(1970, 1, 1));
+                      //  MessageBox.Show(t.TotalSeconds.ToString());
+ 
+                       // break;
                     }
-                    if (count == list.Count - 1)
+                    else if (id == list[count].id && list[count].inside >= 1 && list[count].inside%2==1)//bgainei gia dialeima
+                    {
+                        //TimeSpan timeSpan = DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0);
+                        list[count].timeout = DateTime.Now.ToLongTimeString();
+                        list[count].breaktime = timeSpan;
+                        list[count].lasttime = timeSpan;
+                        //list[count].inside++;
+                       //list[count].timeout = DateTime.Now.ToLongTimeString();
+                         // listBox1.Items[list[count].indexoflistbox]=  list[count].name + "     " + list[count].surname +"      "+ list[count].timein+"     "+list[count].timeout+"\r";
+                          //list[count].inside = 1;
+                         // break;
+                       
+
+                    }
+                    else if (id == list[count].id && list[count].inside >= 1 && list[count].inside % 2 == 0)//mpainei gia douleia
+                    {
+                       // TimeSpan timeSpan = DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0);
+                        list[count].fullbreaktime += (timeSpan-list[count].breaktime);
+                        //list[count].inside++;
+                        //MessageBox.Show(list[count].fullbreaktime.Hours.ToString()+" "+list[count].fullbreaktime.Minutes.ToString()+" "+list[count].fullbreaktime.Seconds.ToString()+" ");
+                        //break;
+                        
+
+
+                    }
+
+                    list[count].fullworktime = timeSpan - list[count].starttime - list[count].fullbreaktime;
+                    listBox1.Items[list[count].indexoflistbox] = list[count].name + "   " + list[count].surname + "        " + list[count].timein + "                      " + list[count].fullworktime.Hours +":"+list[count].fullworktime.Minutes+":"+list[count].fullworktime.Seconds+"             " + list[count].fullbreaktime.Hours+":" +list[count].fullbreaktime.Minutes+":"+list[count].fullbreaktime.Seconds+ "                  " + list[count].timeout + "\r";
+                    list[count].inside++;
+                    break;
+                    }
+                else   if (count == list.Count - 1)
                     {
                         MessageBox.Show("dn iparxei o ipallilos");
                     }
@@ -236,5 +286,11 @@ namespace WindowsFormsApplication15
         {
 
         }
+
+        private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }
+
