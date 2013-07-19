@@ -45,6 +45,7 @@ namespace WindowsFormsApplication15
             public TimeSpan fullbreaktime;
             public TimeSpan fullworktime;
             public TimeSpan lasttime;
+
             public employment()
             {
                 id = null;
@@ -184,11 +185,17 @@ namespace WindowsFormsApplication15
 
                  listBox1.Items.Add (k.name + "    " + k.surname ); 
                  k.indexoflistbox = listBox1.Items.Count-1;
-                 
+                 //dataGridView1.DataSource = k.nameds.table(0);
+                 //dataGridView1.DataSource = k.name.Select(x => new { Value = k }).ToList();
+                // dgvSelectedNode.Show();
+                 this.dataGridView1.Rows.Add(k.name);
                 list.Add(k);
-
+            
 
             }
+            //employment()
+            //this.dataGridView1.Rows.Add("five", "six", "seven", "eight");
+            //this.dataGridView1.Rows.Insert(0, "one", "two", "three", "four");
 
             //MessageBox.Show(list.Count.ToString());
             //MessageBox.Show(list[1].name);
@@ -262,7 +269,10 @@ namespace WindowsFormsApplication15
 
                     list[count].fullworktime = timeSpan - list[count].starttime - list[count].fullbreaktime;
                     listBox1.Items[list[count].indexoflistbox] = list[count].name + "   " + list[count].surname + "        " + list[count].timein + "                      " + list[count].fullworktime.Hours +":"+list[count].fullworktime.Minutes+":"+list[count].fullworktime.Seconds+"             " + list[count].fullbreaktime.Hours+":" +list[count].fullbreaktime.Minutes+":"+list[count].fullbreaktime.Seconds+ "                  " + list[count].timeout + "\r";
-                    list[count].inside++;
+
+
+                    this.dataGridView1.Rows.Insert(list[count].indexoflistbox, list[count].name, list[count].timein);
+                        list[count].inside++;
                     break;
                     }
                 else   if (count == list.Count - 1)
@@ -291,6 +301,10 @@ namespace WindowsFormsApplication15
         {
 
         }
+
+        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
     }
 }
-
